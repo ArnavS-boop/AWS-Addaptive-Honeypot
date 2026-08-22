@@ -1,11 +1,7 @@
 provider "aws" {
-  region = "ap-south-1"
+  region = var.aws_region
 
   default_tags {
-    tags = {
-      Project     = "AWS-Adaptive-Honeypot"
-      ManagedBy   = "Terraform"
-      Environment = "dev"
-    }
+    tags = local.common_tags
   }
 }

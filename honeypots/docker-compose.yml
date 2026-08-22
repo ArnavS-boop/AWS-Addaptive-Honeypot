@@ -1,0 +1,57 @@
+services:
+
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: adaptive-honeypot-cowrie
+
+    restart: unless-stopped
+
+    ports:
+      - "22:2222"
+      - "23:2223"
+
+    volumes:
+      - ./cowrie/var:/cowrie/cowrie-git/var
+      - ./cowrie/etc:/cowrie/cowrie-git/etc
+
+    environment:
+      COWRIE_TELNET_ENABLED: "yes"
+
+    networks:
+      - honeypot_net
+
+
+  dionaea:
+    image: dinotools/dionaea:0.11.0
+    container_name: adaptive-honeypot-dionaea
+    restart: unless-stopped
+
+    ports:
+      - "21:21"
+      - "42:42"
+      - "69:69/udp"
+      - "80:80"
+      - "135:135"
+      - "443:443"
+      - "1445:445"
+      - "1433:1433"
+      - "1723:1723"
+      - "1883:1883"
+      - "1900:1900/udp"
+      - "3306:3306"
+      - "5060:5060"
+      - "5060:5060/udp"
+      - "5061:5061"
+      - "11211:11211"
+
+    volumes:
+      - ./dionaea/etc:/opt/dionaea/etc
+      - ./dionaea/var/lib:/opt/dionaea/var/lib
+      - ./dionaea/var/log:/opt/dionaea/var/log
+
+    networks:
+      - honeypot_net
+
+networks:
+  honeypot_net:
+    driver: bridge

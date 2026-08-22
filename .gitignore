@@ -1,0 +1,12 @@
+.env
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+honeypots/cowrie/var/lib/cowrie/
+honeypots/cowrie/var/log/cowrie/
+honeypots/dionaea/var/lib/dionaea/
+honeypots/dionaea/var/log/dionaea/
+
+# Dionaea generated enabled-handler links
+honeypots/dionaea/etc/dionaea/ihandlers-enabled/
+honeypots/dionaea/etc/dionaea/services-enabled/
