@@ -1,48 +1,24 @@
+mod collectors;
 mod models;
 
-use chrono::Utc;
-use models::*;
-use uuid::Uuid;
+use anyhow::Result;
+use collectors::dionaea::read_events;
 
-fn main() {
-    let event = AttackEvent {
-        event_id: Uuid::new_v4(),
-        timestamp: Utc::now(),
+fn main() -> Result<()> {
+    let path = "../honeypots/dionaea/var/lib/dionaea/dionaea.json";
 
-        source: Source {
-            ip: "172.18.0.1".to_string(),
-            port: Some(52374),
-        },
+    println!("[captor] reading Dionaea telemetry from {path}");
 
-        destination: Destination {
-            honeypot_id: "dionaea-01".to_string(),
-            service: Some("http".to_string()),
-            port: Some(80),
-        },
+    let events = read_events(path)?;
 
-        honeypot: Honeypot {
-            honeypot_type: "dionaea".to_string(),
-            version: Some("0.11.0".to_string()),
-            persona: "generic-linux-server".to_string(),
-        },
+    println!("[captor] loaded {} Dionaea events", events.len());
 
-        interaction: Interaction {
-            session_id: None,
-            protocol: "http".to_string(),
-            action: Some("connection".to_string()),
-            command: None,
-            request: Some("GET /".to_string()),
-        },
+    for event in events {
+        println!(
+            "{}",
+            serde_json::to_string(&event)?
+        );
+    }
 
-        classification: None,
-        mitre: None,
-        risk: None,
-        response: None,
-    };
-
-    println!(
-        "{}",
-        serde_json::to_string_pretty(&event)
-            .expect("failed to serialize attack event")
-    );
+    Ok(())
 }
